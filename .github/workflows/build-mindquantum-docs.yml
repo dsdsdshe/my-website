@@ -1,0 +1,103 @@
+name: Build and Deploy MindQuantum Docs
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Checkout MindSpore docs (primary from Gitee, fallback GitHub)
+        run: |
+          set -euxo pipefail
+          git clone --depth 1 https://gitee.com/mindspore/docs.git mindspore-docs \
+          || git clone --depth 1 https://github.com/mindspore-ai/docs.git mindspore-docs
+
+      - name: Checkout MindQuantum repo for API sources (primary from Gitee, fallback GitHub)
+        run: |
+          set -euxo pipefail
+          git clone --depth 1 https://gitee.com/mindspore/mindquantum.git mindquantum \
+          || git clone --depth 1 https://github.com/mindspore-lab/mindquantum.git mindquantum
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Sphinx dependencies
+        run: |
+          set -euxo pipefail
+          pip install --upgrade pip
+          pip install -r mindspore-docs/docs/mindquantum/docs/requirements.txt
+          # Ensure notebook and directive support that may not be captured explicitly
+          pip install nbsphinx ipython
+
+      - name: Patch MindQuantum Sphinx config to be resilient
+        run: |
+          set -euxo pipefail
+          EN_CONF=mindspore-docs/docs/mindquantum/docs/source_en/conf.py
+          ZH_CONF=mindspore-docs/docs/mindquantum/docs/source_zh_cn/conf.py
+          for f in "$EN_CONF" "$ZH_CONF"; do
+            # So that missing package doesn't hard-fail the build
+            sed -i.bak "s/^import mindquantum/try:\n    import mindquantum\nexcept Exception:\n    mindquantum = None/g" "$f"
+            # Avoid crashing when MQ_PATH is unset or the API dir is missing
+            sed -i.bak "s/^for i in os\.listdir(src_dir):/for i in (os.listdir(src_dir) if (src_dir and os.path.isdir(src_dir)) else []):/g" "$f"
+          done
+
+      - name: Build Sphinx HTML (EN + ZH)
+        env:
+          MQ_PATH: ${{ github.workspace }}/mindquantum
+        run: |
+          set -euxo pipefail
+          BUILD_DIR=_site
+          mkdir -p "$BUILD_DIR/en" "$BUILD_DIR/zh-cn"
+          sphinx-build -b html mindspore-docs/docs/mindquantum/docs/source_en "$BUILD_DIR/en"
+          sphinx-build -b html mindspore-docs/docs/mindquantum/docs/source_zh_cn "$BUILD_DIR/zh-cn"
+          # Add a root redirect to English by default
+          cat > "$BUILD_DIR/index.html" <<'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="refresh" content="0; url=./en/index.html" />
+            <title>Redirecting…</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="./en/index.html">English docs</a>…</p>
+          </body>
+          </html>
+          HTML
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
