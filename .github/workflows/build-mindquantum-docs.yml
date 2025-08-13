@@ -42,21 +42,86 @@ jobs:
         run: |
           set -euxo pipefail
           pip install --upgrade pip
+          # Install exact versions compatible with the MindQuantum docs
           pip install -r mindspore-docs/docs/mindquantum/docs/requirements.txt
-          # Ensure notebook and directive support that may not be captured explicitly
-          pip install nbsphinx ipython
+          # Add notebook support without upgrading Sphinx beyond 4.x
+          pip install 'nbsphinx==0.8.9' 'ipython==8.12.3'
+          # Re-pin core packages in case dependencies tried to upgrade them
+          pip install --no-deps 'sphinx==4.4.0' 'docutils==0.17.1' 'sphinx_rtd_theme==1.0.0' 'myst-parser==0.18.1'
+
+      - name: Show tool versions
+        run: |
+          python -V
+          pip --version
+          python - <<'PY'
+          import sys, pkgutil
+          import importlib
+          for m in ['sphinx','docutils','myst_parser','sphinx_rtd_theme','nbsphinx','IPython']:
+              try:
+                  mod = importlib.import_module(m)
+                  ver = getattr(mod, '__version__', 'unknown')
+                  print(f"{m}: {ver}")
+              except Exception as e:
+                  print(f"{m}: not importable ({e})")
+          PY
 
       - name: Patch MindQuantum Sphinx config to be resilient
         run: |
           set -euxo pipefail
-          EN_CONF=mindspore-docs/docs/mindquantum/docs/source_en/conf.py
-          ZH_CONF=mindspore-docs/docs/mindquantum/docs/source_zh_cn/conf.py
-          for f in "$EN_CONF" "$ZH_CONF"; do
-            # So that missing package doesn't hard-fail the build
-            sed -i.bak "s/^import mindquantum/try:\n    import mindquantum\nexcept Exception:\n    mindquantum = None/g" "$f"
-            # Avoid crashing when MQ_PATH is unset or the API dir is missing
-            sed -i.bak "s/^for i in os\.listdir(src_dir):/for i in (os.listdir(src_dir) if (src_dir and os.path.isdir(src_dir)) else []):/g" "$f"
-          done
+          python - <<'PY'
+          import io, os, re
+
+          def patch_file(path):
+              with io.open(path, 'r', encoding='utf-8') as f:
+                  src = f.read()
+
+              # 1) Guard import mindquantum
+              src = src.replace(
+                  '\nimport mindquantum\n',
+                  '\ntry:\n    import mindquantum\nexcept Exception:\n    mindquantum = None\n',
+              )
+
+              # 2) Guard MQ_PATH joins
+              src = src.replace(
+                  "os.path.join(os.getenv(\"MQ_PATH\"), 'docs/api_python_en')",
+                  "os.path.join(os.getenv(\"MQ_PATH\") or '', 'docs/api_python_en')",
+              )
+              src = src.replace(
+                  "os.path.join(os.getenv(\"MQ_PATH\"), copy_path)",
+                  "os.path.join(os.getenv(\"MQ_PATH\") or '', copy_path)",
+              )
+
+              # 3) Guard directory iteration
+              src = src.replace(
+                  'for i in os.listdir(src_dir):',
+                  'for i in (os.listdir(src_dir) if (src_dir and os.path.isdir(src_dir)) else []):',
+              )
+
+              # 4) Make copy_repo robust when MQ_PATH is empty
+              copy_repo_pattern = re.compile(
+                  r"if os\.getenv\(\"MQ_PATH\"\)\.split\('/'\)\[-1\]:\n\s*copy_repo = os\.getenv\(\"MQ_PATH\"\)\.split\('/'\)\[-1\]\nelse:\n\s*copy_repo = os\.getenv\(\"MQ_PATH\"\)\.split\('/'\)\[-2\]",
+                  re.M,
+              )
+              src = copy_repo_pattern.sub(
+                  "mq_path = os.getenv(\"MQ_PATH\") or ''\nparts = [p for p in mq_path.split('/') if p]\ncopy_repo = parts[-1] if parts else 'mindquantum'",
+                  src,
+              )
+
+              # 5) In EN conf, wrap theme layout copy in try/except (if present)
+              src = src.replace(
+                  'import sphinx_rtd_theme\nlayout_target = os.path.join(os.path.dirname(sphinx_rtd_theme.__file__), \'layout.html\')\nlayout_src = \'../../../../resource/_static/layout.html\'\nif os.path.exists(layout_target):\n    os.remove(layout_target)\nshutil.copy(layout_src, layout_target)\n',
+                  'try:\n    import sphinx_rtd_theme\n    layout_target = os.path.join(os.path.dirname(sphinx_rtd_theme.__file__), \'layout.html\')\n    layout_src = \'../../../../resource/_static/layout.html\'\n    if os.path.exists(layout_target):\n        os.remove(layout_target)\n    shutil.copy(layout_src, layout_target)\nexcept Exception:\n    pass\n',
+              )
+
+              with io.open(path, 'w', encoding='utf-8') as f:
+                  f.write(src)
+
+          for p in [
+              'mindspore-docs/docs/mindquantum/docs/source_en/conf.py',
+              'mindspore-docs/docs/mindquantum/docs/source_zh_cn/conf.py',
+          ]:
+              patch_file(p)
+          PY
 
       - name: Build Sphinx HTML (EN + ZH)
         env:
@@ -100,4 +165,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
