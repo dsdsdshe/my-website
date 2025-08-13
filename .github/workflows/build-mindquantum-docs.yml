@@ -49,6 +49,7 @@ jobs:
           # Re-pin core packages in case dependencies tried to upgrade them
           pip install --no-deps 'sphinx==4.4.0' 'docutils==0.17.1' 'sphinx_rtd_theme==1.0.0' 'myst-parser==0.18.1'
           # Ensure Sphinx 4.x compatible sphinxcontrib packages
+          pip uninstall -y sphinxcontrib-applehelp sphinxcontrib-devhelp sphinxcontrib-qthelp sphinxcontrib-serializinghtml || true
           pip install 'sphinxcontrib-applehelp<2' 'sphinxcontrib-devhelp<2' 'sphinxcontrib-htmlhelp<2' 'sphinxcontrib-qthelp<2' 'sphinxcontrib-serializinghtml<2'
 
       - name: Install pandoc (for nbsphinx)
@@ -61,9 +62,11 @@ jobs:
           python -V
           pip --version
           python - <<'PY'
-          import sys, pkgutil
           import importlib
-          for m in ['sphinx','docutils','myst_parser','sphinx_rtd_theme','nbsphinx','IPython']:
+          for m in [
+              'sphinx','docutils','myst_parser','sphinx_rtd_theme','nbsphinx','IPython',
+              'sphinxcontrib.applehelp','sphinxcontrib.devhelp','sphinxcontrib.htmlhelp',
+              'sphinxcontrib.qthelp','sphinxcontrib.serializinghtml']:
               try:
                   mod = importlib.import_module(m)
                   ver = getattr(mod, '__version__', 'unknown')
