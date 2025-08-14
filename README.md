@@ -43,8 +43,8 @@ npm run build
 ```
 
 Tailwind CSS:
-- Development: `npm run dev` also runs `tailwindcss` in watch mode, writing the compiled CSS to `dist/styles.css`.
-- Production: `npm run build` runs `tailwindcss` with minification before Eleventy.
+- Development: `npm run dev` also runs `tailwindcss` in watch mode, writing the compiled CSS to `public/styles.css` (Eleventy passthrough copies it to `dist/`).
+- Production: `npm run build` runs `tailwindcss` with minification before Eleventy, outputting to `public/styles.css`.
 - Configuration: `tailwind.config.cjs` (dark mode is driven by `data-theme="dark"`).
 
 ## Build docs locally (optional)

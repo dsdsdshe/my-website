@@ -17,7 +17,7 @@
       <span class="brand-text">{{ site.title }}</span>
     </a>
 
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav" onclick="(function(btn){ const nav = document.getElementById('primary-nav'); const open = nav.getAttribute('data-open')==='true'; nav.setAttribute('data-open', !open); btn.setAttribute('aria-expanded', String(!open)); })(this)">
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
       ☰
     </button>
 
@@ -33,7 +33,7 @@
           <a class="btn secondary" href="{{ site.repo_url }}" rel="noopener">GitHub</a>
         </li>
         <li>
-          <button class="theme-toggle" title="Toggle theme" onclick="window.__toggleTheme()">🌓</button>
+          <button class="theme-toggle" title="Toggle theme" data-theme-toggle>🌓</button>
         </li>
       </ul>
     </nav>

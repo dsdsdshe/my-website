@@ -8,8 +8,8 @@
     "dev:with-docs": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh && eleventy --serve",
     "build": "npm run css:build && eleventy",
     "build:all": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh",
-    "css:dev": "tailwindcss -i src/styles.css -o dist/styles.css --watch --postcss",
-    "css:build": "tailwindcss -i src/styles.css -o dist/styles.css --minify --postcss",
+    "css:dev": "tailwindcss -i src/styles.css -o public/styles.css --watch --postcss",
+    "css:build": "tailwindcss -i src/styles.css -o public/styles.css --minify --postcss",
     "docs:build:zh": "DOCS_LANG=zh_cn bash scripts/build_docs.sh",
     "docs:build:en": "DOCS_LANG=en bash scripts/build_docs.sh",
     "clean": "rm -rf dist"
