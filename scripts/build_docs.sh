@@ -87,19 +87,13 @@ fi
 source "$VENV_DIR/bin/activate"
 python -m pip install --upgrade pip wheel setuptools
 
-# Install repo-wide requirements (if present) and project-specific ones
-if [[ -f "$WORK_DIR/src/requirements.txt" ]]; then
-  echo "Installing docs repo requirements (constrained)"
-  pip install -c "$CONSTRAINTS_FILE" -r "$WORK_DIR/src/requirements.txt"
-fi
-
 if [[ -f "$SPHINX_ROOT/requirements.txt" ]]; then
   echo "Installing MindQuantum docs requirements (constrained)"
   pip install -c "$CONSTRAINTS_FILE" -r "$SPHINX_ROOT/requirements.txt"
 fi
 
 # Ensure extras present, constrained
-pip install -c "$CONSTRAINTS_FILE" nbsphinx ipython
+pip install -c "$CONSTRAINTS_FILE" nbsphinx ipython mindquantum mindspore
 
 # Prepare MindQuantum repo (for MQ_PATH and API sources copy in conf.py)
 if [[ -z "${MQ_PATH:-}" ]]; then
@@ -120,18 +114,6 @@ else
     export MQ_PATH="$MQ_ABS"
   fi
   echo "Using provided MQ_PATH: $MQ_PATH"
-fi
-
-# Provide a minimal stub for `import mindquantum` if requested
-STUBS_DIR="$WORK_DIR/stubs"
-if [[ "$USE_STUB_MQ" == "1" ]]; then
-  mkdir -p "$STUBS_DIR/mindquantum"
-  cat > "$STUBS_DIR/mindquantum/__init__.py" << 'PY'
-__all__ = []
-__version__ = "0.0-stub"
-PY
-  # Ensure the stub is discoverable via PYTHONPATH only (no site-packages fallback)
-  export PYTHONPATH="$STUBS_DIR:${PYTHONPATH:-}"
 fi
 
 # Build via Makefile to run pre-steps in _ext/
