@@ -147,16 +147,24 @@ mkdir -p "$OUTPUT_DIR"
   # --- Bridge CSS injection (no changes to conf.py) ---
   # Copy our site CSS bridge into the docs' _static folder, then inject a
   # <link> tag into each HTML file with a correct relative path.
-  BRIDGE_SRC_REL="public/assets/css/docs-bridge.css"
-  if [[ -f "$BRIDGE_SRC_REL" ]]; then
+  BRIDGE_CSS_SRC_REL="public/assets/css/docs-bridge.css"
+  BRIDGE_JS_SRC_REL="public/assets/js/docs-bridge.js"
+  if [[ -f "$BRIDGE_CSS_SRC_REL" ]]; then
     mkdir -p "$OUTPUT_DIR/_static"
-    cp -f "$BRIDGE_SRC_REL" "$OUTPUT_DIR/_static/mq-bridge.css"
-    echo "Injected bridge CSS file to $OUTPUT_DIR/_static/mq-bridge.css"
+    cp -f "$BRIDGE_CSS_SRC_REL" "$OUTPUT_DIR/_static/mq-bridge.css"
+    if [[ -f "$BRIDGE_JS_SRC_REL" ]]; then
+      cp -f "$BRIDGE_JS_SRC_REL" "$OUTPUT_DIR/_static/mq-bridge.js"
+      echo "Injected bridge assets to $OUTPUT_DIR/_static (CSS + JS)"
+    else
+      echo "Injected bridge CSS file to $OUTPUT_DIR/_static/mq-bridge.css (no JS)"
+    fi
 
     # Walk all HTML files and insert the link before </head>
     while IFS= read -r -d '' html; do
-      # Skip if already injected
-      if grep -q "mq-bridge.css" "$html"; then
+      has_css=0; has_js=0
+      if grep -q "mq-bridge.css" "$html"; then has_css=1; fi
+      if grep -q "mq-bridge.js" "$html"; then has_js=1; fi
+      if [[ $has_css -eq 1 && $has_js -eq 1 ]]; then
         continue
       fi
       rel_path="${html#"$OUTPUT_DIR/"}"
@@ -169,14 +177,20 @@ mkdir -p "$OUTPUT_DIR"
         prefix=""
         for ((i=0; i<depth; i++)); do prefix="../$prefix"; done
       fi
-      link_tag="<link rel=\"stylesheet\" href=\"${prefix}_static/mq-bridge.css\">"
-      awk -v link="$link_tag" '
+      insert_block=""
+      if [[ $has_css -eq 0 ]]; then
+        insert_block+="  <link rel=\"stylesheet\" href=\"${prefix}_static/mq-bridge.css\">\n"
+      fi
+      if [[ -f \"$OUTPUT_DIR/_static/mq-bridge.js\" && $has_js -eq 0 ]]; then
+        insert_block+="  <script src=\"${prefix}_static/mq-bridge.js\" defer></script>\n"
+      fi
+      awk -v block="$insert_block" '
         BEGIN{done=0}
-        /<\/head>/ && !done { print "  " link; done=1 }
+        /<\/head>/ && !done { printf "%s", block; done=1 }
         { print }
       ' "$html" > "$html.__tmp" && mv "$html.__tmp" "$html"
     done < <(find "$OUTPUT_DIR" -type f -name "*.html" -print0)
     echo "Bridge CSS link injected into docs HTML."
   else
-    echo "Warning: Bridge CSS $BRIDGE_SRC_REL not found; skipping visual alignment." >&2
+    echo "Warning: Bridge CSS $BRIDGE_CSS_SRC_REL not found; skipping visual alignment." >&2
   fi

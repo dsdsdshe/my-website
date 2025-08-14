@@ -1,19 +1,61 @@
-/* MindQuantum docs bridge: gently align Sphinx pages with the main site */
-/* Safe overrides only: fonts, primary color, spacing touch-ups */
+/* MindQuantum docs bridge: align Sphinx pages with the main site */
+/* Safe overrides only: fonts, primary color, spacing, subtle surfaces */
 
-/* Base font + colors to match site */
-html, body {
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+/* Base font to match site */
+html, body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+
+/* Local tokens for docs (mirrors site) */
+:root {
+  --mq-brand: #0b4ad8;
+  --mq-brand-600: #0b4ad8;
+  --mq-brand-400: #5aa3ff;
+  --mq-text: #151515;
+  --mq-muted: #5b616e;
+  --mq-bg: #ffffff;
+  --mq-bg-elev: #ffffff;
+  --mq-bg-alt: #f7f7fb;
+  --mq-border: #e5e7eb;
+  --mq-code-bg: #f7f7fb;
+  --mq-code-text: #1f2937;
+  --mq-radius: 12px;
+}
+html[data-theme="dark"] {
+  --mq-brand: #6aa7ff;
+  --mq-brand-600: #8bb8ff;
+  --mq-brand-400: #a9c9ff;
+  --mq-text: #e5e7eb;
+  --mq-muted: #a7b0c0;
+  --mq-bg: #0b0f17;
+  --mq-bg-elev: #121725;
+  --mq-bg-alt: #0f1420;
+  --mq-border: #1e2636;
+  --mq-code-bg: #101826;
+  --mq-code-text: #d1d5db;
 }
 
 /* Primary color variables used by pydata-sphinx-theme */
-:root {
-  --pst-color-primary: #0b4ad8; /* matches --brand in site */
-  --pst-color-primary-bg: rgba(11, 74, 216, .08);
-}
+:root { --pst-color-primary: var(--mq-brand); --pst-color-primary-bg: rgba(11, 74, 216, .08); }
+html[data-theme="dark"] { --pst-color-primary: var(--mq-brand); --pst-color-primary-bg: rgba(106, 167, 255, .12); }
 
-/* Make code blocks and inline code feel similar */
-code { border-radius: .35rem; padding: .1rem .25rem; }
+/* Base look & rhythm */
+body { background: var(--mq-bg); color: var(--mq-text); }
+.bd-content { line-height: 1.7; }
+a { color: var(--mq-brand); }
+
+/* Header */
+.bd-header { box-shadow: 0 1px 0 rgba(0,0,0,.06); background: var(--mq-bg-elev); border-bottom: 1px solid var(--mq-border); }
+.bd-header a { color: var(--mq-text); }
+.bd-header a:hover { background: var(--mq-bg-alt); border-radius: .5rem; }
+
+/* Containers and content width to mirror site rhythm */
+.bd-page-width, .bd-container { max-width: 1100px; width: min(1100px, 92%); margin-inline: auto; }
+
+/* Sidebars and footer */
+.bd-sidebar { background: var(--mq-bg-elev); border-right: 1px solid var(--mq-border); border-radius: .6rem; }
+.bd-footer { background: var(--mq-bg-elev); border-top: 1px solid var(--mq-border); color: var(--mq-muted); }
+
+/* Code & inline code */
+code { border-radius: .35rem; padding: .1rem .25rem; background: var(--mq-code-bg); color: var(--mq-code-text); }
 div.highlight pre, pre { border-radius: .6rem; }
 
 /* Buttons/links harmonization */
@@ -22,17 +64,13 @@ a, .btn { border-radius: .5rem; }
 /* Subtle card rounding used by admonitions and sidebars */
 div.admonition, .bd-sidebar, .bd-header { border-radius: .6rem; }
 
-/* Reduce overly tall header shadows if present */
-.bd-header { box-shadow: 0 1px 0 rgba(0,0,0,.06); }
+/* Search */
+.bd-search .search-input, .bd-search input[type="search"] { border-radius: .6rem; border: 1px solid var(--mq-border); background: var(--mq-bg); color: var(--mq-text); }
+.bd-search .search-button, .bd-search button { border-radius: .6rem; }
 
-/* Optional: tweak spacing inside content */
-.bd-content { line-height: 1.7; }
-
-/* Dark mode alignment when pydata theme toggles [data-theme] */
-html[data-theme="dark"] {
-  --pst-color-primary: #6aa7ff;
-  --pst-color-primary-bg: rgba(106, 167, 255, .12);
-}
+/* Tables & images */
+table { border-radius: .6rem; overflow: hidden; }
+img { border-radius: .6rem; }
 
 /* Avoid anchor overlap with sticky header */
 .bd-content [id] { scroll-margin-top: 80px; }
