@@ -46,6 +46,8 @@ a { color: var(--mq-brand); }
 .bd-header { box-shadow: 0 1px 0 rgba(0,0,0,.06); background: var(--mq-bg-elev); border-bottom: 1px solid var(--mq-border); }
 .bd-header a { color: var(--mq-text); }
 .bd-header a:hover { background: var(--mq-bg-alt); border-radius: .5rem; }
+/* Offset sticky header under sitebar */
+.bd-header { position: sticky; top: var(--mq-sitebar-h, 0); z-index: 1000; }
 
 /* Containers and content width to mirror site rhythm */
 .bd-page-width, .bd-container { max-width: 1100px; width: min(1100px, 92%); margin-inline: auto; }
@@ -72,5 +74,16 @@ div.admonition, .bd-sidebar, .bd-header { border-radius: .6rem; }
 table { border-radius: .6rem; overflow: hidden; }
 img { border-radius: .6rem; }
 
-/* Avoid anchor overlap with sticky header */
-.bd-content [id] { scroll-margin-top: 80px; }
+/* Avoid anchor overlap with stacked headers */
+.bd-content [id] { scroll-margin-top: calc(96px + var(--mq-sitebar-h, 0px)); }
+
+/* Sitebar styles */
+.mq-sitebar { position: sticky; top: 0; z-index: 1002; background: var(--mq-bg-elev); border-bottom: 1px solid var(--mq-border); backdrop-filter: saturate(120%) blur(6px); }
+.mq-sitebar-inner { max-width: 1100px; width: min(1100px, 92%); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; height: 42px; }
+.mq-brand { display: inline-flex; align-items: center; gap: .5rem; color: var(--mq-text); font-weight: 700; text-decoration: none; font-size: .98rem; }
+.mq-logo { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, var(--mq-brand-600), var(--mq-brand-400)); color: #fff; }
+.mq-nav { display: flex; align-items: center; gap: .25rem; }
+.mq-nav a { text-decoration: none; color: var(--mq-text); padding: .35rem .55rem; border-radius: .5rem; }
+.mq-nav a.active, .mq-nav a[aria-current="page"], .mq-nav a:hover { background: var(--mq-bg-alt); }
+.mq-btn { background: var(--mq-bg-alt); color: var(--mq-text); border: 1px solid var(--mq-border); border-radius: .5rem; padding: .35rem .6rem; text-decoration: none; }
+.mq-theme { background: var(--mq-bg-alt); border: 1px solid var(--mq-border); color: var(--mq-text); padding: .35rem .55rem; border-radius: .5rem; cursor: pointer; }

@@ -49,8 +49,63 @@
         }, 30);
       }
     }, true);
+
+    // --- Inject a compact site bar for unified navigation ---
+    var path = location.pathname;
+    var idx = path.indexOf('/docs/');
+    var siteRoot = idx >= 0 ? path.slice(0, idx + 1) : '/';
+    function langFromPath(p){
+      var m = p.match(/\/docs\/(zh|en)\//);
+      return m ? m[1] : null;
+    }
+    var curLang = langFromPath(path);
+
+    var sitebar = document.createElement('div');
+    sitebar.className = 'mq-sitebar';
+    sitebar.innerHTML = ''+
+      '<div class="mq-sitebar-inner">' +
+      '  <a class="mq-brand" href="' + siteRoot + '">' +
+      '    <span class="mq-logo" aria-hidden="true"></span>' +
+      '    <span class="mq-brand-text">MindQuantum</span>' +
+      '  </a>' +
+      '  <nav class="mq-nav" aria-label="Site">' +
+      '    <a href="' + siteRoot + '">Home</a>' +
+      '    <a href="' + siteRoot + 'docs/zh/"' + (curLang==='zh' ? ' aria-current="page" class="active"' : '') + '>Docs (ZH)</a>' +
+      '    <a href="' + siteRoot + 'docs/en/"' + (curLang==='en' ? ' aria-current="page" class="active"' : '') + '>Docs (EN)</a>' +
+      '    <a href="' + siteRoot + 'blog/">Blog</a>' +
+      '    <a class="mq-btn" href="https://gitee.com/mindspore/mindquantum" rel="noopener">GitHub</a>' +
+      '    <button class="mq-theme" title="Toggle theme">🌓</button>' +
+      '  </nav>' +
+      '</div>';
+
+    var header = document.querySelector('.bd-header');
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(sitebar, header);
+    } else {
+      document.body.insertBefore(sitebar, document.body.firstChild);
+    }
+
+    // Measure height and set CSS var to push sticky header
+    requestAnimationFrame(function(){
+      var h = sitebar.getBoundingClientRect().height;
+      if (h && h > 0) {
+        root.style.setProperty('--mq-sitebar-h', h + 'px');
+      }
+    });
+
+    // Theme toggle button in site bar
+    var themeBtn = sitebar.querySelector('.mq-theme');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function(){
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try {
+          localStorage.setItem('theme', next);
+          localStorage.setItem('mode', next);
+        } catch (e) {}
+      });
+    }
   } catch (e) {
     // no-op
   }
 })();
-
