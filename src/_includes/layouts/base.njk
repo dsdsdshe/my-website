@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,34 +15,30 @@
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
-    <header class="site-header">
-      <div class="container header-inner">
-        <a class="brand" href="{{ "/" | url }}">{{ site.title }}</a>
-        <nav aria-label="Primary">
-          <ul class="nav">
-            {% for item in site.nav %}
-            <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
-            {% endfor %}
-          </ul>
-        </nav>
-      </div>
-    </header>
+
+    {% include "components/nav.njk" %}
 
     <main id="content" class="container">
       {{ content | safe }}
     </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <p>
-          © <span id="year"></span> {{ site.title }}.
-          <a href="{{ site.repo_url }}" rel="noopener">Source</a>
-        </p>
-      </div>
-    </footer>
+    {% include "components/footer.njk" %}
 
     <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
+      // Theme: sync with OS preference and persist user choice
+      (function() {
+        const root = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initial = saved || (prefersDark ? 'dark' : 'light');
+        root.setAttribute('data-theme', initial);
+        const toggle = () => {
+          const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+        };
+        window.__toggleTheme = toggle;
+      })();
     </script>
   </body>
   </html>

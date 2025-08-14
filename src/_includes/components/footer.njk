@@ -1,0 +1,10 @@
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      © <span id="year"></span> {{ site.title }}.
+      <a href="{{ site.repo_url }}" rel="noopener">Source</a>
+    </p>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</footer>
+

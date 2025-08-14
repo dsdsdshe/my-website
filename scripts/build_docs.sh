@@ -136,10 +136,47 @@ fi
 
 # Copy built HTML to output directory
 mkdir -p "$OUTPUT_DIR"
-if [[ "$DOCS_LANG" == "en" ]]; then
-  rsync -a --delete "$SPHINX_ROOT/build_en/html/" "$OUTPUT_DIR/"
-else
-  rsync -a --delete "$SPHINX_ROOT/build_zh_cn/html/" "$OUTPUT_DIR/"
-fi
+  if [[ "$DOCS_LANG" == "en" ]]; then
+    rsync -a --delete "$SPHINX_ROOT/build_en/html/" "$OUTPUT_DIR/"
+  else
+    rsync -a --delete "$SPHINX_ROOT/build_zh_cn/html/" "$OUTPUT_DIR/"
+  fi
 
-echo "Docs built to $OUTPUT_DIR"
+  echo "Docs built to $OUTPUT_DIR"
+
+  # --- Bridge CSS injection (no changes to conf.py) ---
+  # Copy our site CSS bridge into the docs' _static folder, then inject a
+  # <link> tag into each HTML file with a correct relative path.
+  BRIDGE_SRC_REL="public/assets/css/docs-bridge.css"
+  if [[ -f "$BRIDGE_SRC_REL" ]]; then
+    mkdir -p "$OUTPUT_DIR/_static"
+    cp -f "$BRIDGE_SRC_REL" "$OUTPUT_DIR/_static/mq-bridge.css"
+    echo "Injected bridge CSS file to $OUTPUT_DIR/_static/mq-bridge.css"
+
+    # Walk all HTML files and insert the link before </head>
+    while IFS= read -r -d '' html; do
+      # Skip if already injected
+      if grep -q "mq-bridge.css" "$html"; then
+        continue
+      fi
+      rel_path="${html#"$OUTPUT_DIR/"}"
+      dir_rel=$(dirname "$rel_path")
+      if [[ "$dir_rel" == "." ]]; then
+        prefix=""
+      else
+        # Count directory depth and build ../ prefix
+        depth=$(awk -F/ '{print NF}' <<< "$dir_rel")
+        prefix=""
+        for ((i=0; i<depth; i++)); do prefix="../$prefix"; done
+      fi
+      link_tag="<link rel=\"stylesheet\" href=\"${prefix}_static/mq-bridge.css\">"
+      awk -v link="$link_tag" '
+        BEGIN{done=0}
+        /<\/head>/ && !done { print "  " link; done=1 }
+        { print }
+      ' "$html" > "$html.__tmp" && mv "$html.__tmp" "$html"
+    done < <(find "$OUTPUT_DIR" -type f -name "*.html" -print0)
+    echo "Bridge CSS link injected into docs HTML."
+  else
+    echo "Warning: Bridge CSS $BRIDGE_SRC_REL not found; skipping visual alignment." >&2
+  fi

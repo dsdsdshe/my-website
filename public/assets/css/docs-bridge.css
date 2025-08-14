@@ -1,0 +1,36 @@
+/* MindQuantum docs bridge: gently align Sphinx pages with the main site */
+/* Safe overrides only: fonts, primary color, spacing touch-ups */
+
+/* Base font + colors to match site */
+html, body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Primary color variables used by pydata-sphinx-theme */
+:root {
+  --pst-color-primary: #0b4ad8; /* matches --brand in site */
+  --pst-color-primary-bg: rgba(11, 74, 216, .08);
+}
+
+/* Make code blocks and inline code feel similar */
+code { border-radius: .35rem; padding: .1rem .25rem; }
+div.highlight pre, pre { border-radius: .6rem; }
+
+/* Buttons/links harmonization */
+a, .btn { border-radius: .5rem; }
+
+/* Subtle card rounding used by admonitions and sidebars */
+div.admonition, .bd-sidebar, .bd-header { border-radius: .6rem; }
+
+/* Reduce overly tall header shadows if present */
+.bd-header { box-shadow: 0 1px 0 rgba(0,0,0,.06); }
+
+/* Optional: tweak spacing inside content */
+.bd-content { line-height: 1.7; }
+
+/* Dark mode alignment when pydata theme toggles [data-theme] */
+html[data-theme="dark"] {
+  --pst-color-primary: #6aa7ff;
+  --pst-color-primary-bg: rgba(106, 167, 255, .12);
+}
+

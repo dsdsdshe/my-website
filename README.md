@@ -101,6 +101,13 @@ Steps to enable:
 Notes:
 - The combine step downloads docs artifacts into `dist/docs/` so links like `/docs/zh/` resolve correctly on Pages.
 
+### Make docs and homepage visually consistent
+No changes to Sphinx `conf.py` are required. The docs build script automatically:
+- Copies a small bridge stylesheet into the docs output at `_static/mq-bridge.css`.
+- Injects a `<link rel="stylesheet">` tag into all generated HTML with the correct relative path.
+
+This harmonizes base fonts and the primary color so Sphinx pages feel native to the site. If you’re using `pydata-sphinx-theme`, it also sets `--pst-color-primary` for better alignment.
+
 If the workflow cannot auto-detect the MindQuantum `conf.py`, set `DOCS_SUBPATH` in the workflow step to the correct directory.
 
 ## GitHub Pages pathPrefix
@@ -125,6 +132,10 @@ All links in templates use Eleventy’s `url` filter to respect `pathPrefix`.
 - Layout and styles: `src/_includes/layouts/base.njk`, `src/styles.css`
 - Landing content: `src/index.njk`
 - Blog index placeholder: `src/blog.njk`
+
+Optional pieces already in place:
+- Responsive header with theme toggle (light/dark)
+- Docs bridge stylesheet at `public/assets/css/docs-bridge.css`
 
 You can add more pages under `src/` as `.njk`, `.md`, or `.html` files. The default layout is `layouts/base.njk` when specified in the front matter.
 

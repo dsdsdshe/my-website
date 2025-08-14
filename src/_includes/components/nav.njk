@@ -1,0 +1,24 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="{{ "/" | url }}">
+      <span class="logo" aria-hidden="true">⟂</span>
+      <span class="brand-text">{{ site.title }}</span>
+    </a>
+
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav" onclick="(function(btn){ const nav = document.getElementById('primary-nav'); const open = nav.getAttribute('data-open')==='true'; nav.setAttribute('data-open', !open); btn.setAttribute('aria-expanded', String(!open)); })(this)">
+      ☰
+    </button>
+
+    <nav id="primary-nav" aria-label="Primary" data-open="false">
+      <ul class="nav">
+        {% for item in site.nav %}
+        <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
+        {% endfor %}
+        <li>
+          <button class="theme-toggle" title="Toggle theme" onclick="window.__toggleTheme()">🌓</button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
