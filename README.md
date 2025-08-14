@@ -43,7 +43,6 @@ By default, the script uses:
 - `DOCS_REPO_URL`: `https://gitee.com/mindspore/docs.git`
 - `DOCS_LANG`: `zh_cn` (set `en` to build English)
 - Auto-detection for the MindQuantum `conf.py` within the docs repo
-- A minimal stub for `import mindquantum` so the build does not require compiling MindQuantum
 
 If auto-detection fails, specify the path to the `conf.py` directory relative to the docs repo root, for example:
 
