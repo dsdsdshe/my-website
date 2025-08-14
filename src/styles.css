@@ -1,0 +1,80 @@
+/* Minimal, accessible base styles for MindQuantum site */
+:root {
+  --brand: #0b4ad8;
+  --text: #151515;
+  --muted: #6b7280;
+  --bg: #ffffff;
+  --bg-alt: #f7f7fb;
+  --border: #e5e7eb;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: -999px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--brand);
+  color: #fff;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+}
+
+.site-header {
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { color: var(--text); font-weight: 700; text-decoration: none; font-size: 1.05rem; }
+.nav { list-style: none; display: flex; gap: 1rem; padding: 0; margin: 0; }
+.nav a { text-decoration: none; color: var(--text); padding: .5rem .75rem; border-radius: .5rem; }
+.nav a:hover, .nav a:focus { background: var(--bg-alt); }
+
+main.container { padding: 2rem 0 3rem; }
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 2.5rem 0;
+}
+.hero h1 { font-size: clamp(2rem, 3vw + 1rem, 3rem); line-height: 1.15; margin: 0 0 .75rem; }
+.hero p { color: var(--muted); font-size: 1.05rem; }
+.hero .cta { margin-top: 1rem; display: flex; gap: .75rem; flex-wrap: wrap; }
+.btn { display: inline-block; padding: .65rem .9rem; border-radius: .6rem; text-decoration: none; font-weight: 600; }
+.btn.primary { background: var(--brand); color: #fff; }
+.btn.secondary { background: var(--bg-alt); color: var(--text); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 2rem; }
+.card { border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; background: #fff; }
+.card h3 { margin-top: 0; }
+
+.site-footer { border-top: 1px solid var(--border); background: var(--bg); }
+.site-footer .container { padding: 1.5rem 0; color: var(--muted); font-size: .95rem; }
+
+@media (max-width: 800px) {
+  .hero { grid-template-columns: 1fr; }
+}
+

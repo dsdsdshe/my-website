@@ -1,0 +1,73 @@
+name: Deploy website
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Build static site (Eleventy)
+        run: npm run build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc graphviz
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Build Sphinx docs from MindSpore/docs
+        env:
+          DOCS_REPO_URL: https://gitee.com/mindspore/docs.git
+          DOCS_SUBPATH: "" # set to conf.py directory if auto-detection fails
+          OUTPUT_DIR: dist/docs
+          DOCS_LANG: zh_cn
+          MQ_REPO_URL: https://gitee.com/mindspore/mindquantum.git
+          USE_STUB_MQ: "1"
+        run: bash scripts/build_docs.sh
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,12 @@
+{
+  "title": "MindQuantum",
+  "description": "Open-source quantum computing framework by MindSpore.",
+  "baseUrl": "/",
+  "repo_url": "https://gitee.com/mindspore/mindquantum",
+  "nav": [
+    { "label": "Home", "url": "/" },
+    { "label": "Docs", "url": "/docs/" },
+    { "label": "Blog", "url": "/blog/" }
+  ]
+}
+
