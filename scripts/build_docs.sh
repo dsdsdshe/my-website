@@ -21,7 +21,6 @@ set -euo pipefail
 # - MQ_REPO_URL: MindQuantum repo URL (default: https://gitee.com/mindspore/mindquantum.git)
 # - MQ_REF: MindQuantum branch or tag (default: master)
 # - MQ_PATH: If set, use this existing path instead of cloning MindQuantum
-# - USE_STUB_MQ: If "1", provide a minimal stub for `import mindquantum` during build
 
 DOCS_REPO_URL="${DOCS_REPO_URL:-https://gitee.com/mindspore/docs.git}"
 DOCS_REF="${DOCS_REF:-master}"
@@ -30,7 +29,6 @@ WORK_DIR="${WORK_DIR:-.tmp/docs}"
 DOCS_LANG="${DOCS_LANG:-zh_cn}"
 MQ_REPO_URL="${MQ_REPO_URL:-https://gitee.com/mindspore/mindquantum.git}"
 MQ_REF="${MQ_REF:-master}"
-USE_STUB_MQ="${USE_STUB_MQ:-1}"
 
 mkdir -p "$WORK_DIR"
 

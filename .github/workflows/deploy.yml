@@ -82,7 +82,6 @@ jobs:
           DOCS_SUBPATH: "" # set to conf.py directory if auto-detection fails
           DOCS_LANG: ${{ matrix.lang }}
           MQ_REPO_URL: https://gitee.com/mindspore/mindquantum.git
-          USE_STUB_MQ: "1"
         run: bash scripts/build_docs.sh
 
       - name: Upload docs artifact (${{ matrix.lang }})
@@ -108,13 +107,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: docs-zh_cn
-          path: dist
+          path: dist/docs
 
       - name: Download en docs artifact
         uses: actions/download-artifact@v4
         with:
           name: docs-en
-          path: dist
+          path: dist/docs
 
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v3
@@ -131,4 +130,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

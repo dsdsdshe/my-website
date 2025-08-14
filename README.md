@@ -23,6 +23,20 @@ npm run dev
 
 Open http://localhost:8080 to preview. The “Docs” links will 404 locally until you build docs into `dist/docs/zh` or `dist/docs/en`.
 
+Convenience commands:
+
+```bash
+# Build and serve site plus both doc languages
+npm run dev:with-docs
+
+# Build only docs
+npm run docs:build:zh
+npm run docs:build:en
+
+# Build everything for a local final preview
+npm run build:all && npx serve dist
+```
+
 Build the site:
 ```bash
 npm run build
@@ -83,6 +97,9 @@ Steps to enable:
    - Build docs in a matrix for `zh_cn` and `en` (two jobs)
    - Combine artifacts to produce a final `dist/` with `docs/zh/` and `docs/en/`
    - Publish `dist/` to Pages
+
+Notes:
+- The combine step downloads docs artifacts into `dist/docs/` so links like `/docs/zh/` resolve correctly on Pages.
 
 If the workflow cannot auto-detect the MindQuantum `conf.py`, set `DOCS_SUBPATH` in the workflow step to the correct directory.
 

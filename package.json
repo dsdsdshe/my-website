@@ -5,11 +5,14 @@
   "description": "Static website for MindQuantum with Eleventy and Sphinx-built docs.",
   "scripts": {
     "dev": "eleventy --serve",
+    "dev:with-docs": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh && eleventy --serve",
     "build": "eleventy",
+    "build:all": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh",
+    "docs:build:zh": "DOCS_LANG=zh_cn bash scripts/build_docs.sh",
+    "docs:build:en": "DOCS_LANG=en bash scripts/build_docs.sh",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@11ty/eleventy": "^2.0.1"
   }
 }
-
