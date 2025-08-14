@@ -95,8 +95,11 @@ if [[ -f "$SPHINX_ROOT/requirements.txt" ]]; then
   pip install -r "$SPHINX_ROOT/requirements.txt"
 fi
 
-# Ensure needed extras present (not always in requirements.txt)
-pip install ipython nbsphinx
+# Ensure compatible extras present without breaking pinned Sphinx/docutils
+# The docs repo uses nbsphinx ~= 0.8.x elsewhere; align to avoid upgrades
+pip install "nbsphinx==0.8.11" ipython
+# Re-pin Sphinx/docutils in case any transitive deps tried to upgrade them
+pip install "sphinx==4.4.0" "docutils==0.17.1"
 
 # Prepare MindQuantum repo (for MQ_PATH and API sources copy in conf.py)
 if [[ -z "${MQ_PATH:-}" ]]; then
@@ -107,8 +110,15 @@ if [[ -z "${MQ_PATH:-}" ]]; then
     echo "Cloning MindQuantum repository: $MQ_REPO_URL@${MQ_REF}"
     git clone --depth 1 --branch "$MQ_REF" "$MQ_REPO_URL" "$MQ_DIR"
   fi
-  export MQ_PATH="$MQ_DIR"
+  # Resolve to absolute path
+  MQ_ABS=$(cd "$MQ_DIR" && pwd)
+  export MQ_PATH="$MQ_ABS"
 else
+  # Normalize provided MQ_PATH to absolute path so conf.py can locate files reliably
+  if [[ -d "$MQ_PATH" ]]; then
+    MQ_ABS=$(cd "$MQ_PATH" && pwd)
+    export MQ_PATH="$MQ_ABS"
+  fi
   echo "Using provided MQ_PATH: $MQ_PATH"
 fi
 
@@ -120,7 +130,16 @@ if [[ "$USE_STUB_MQ" == "1" ]]; then
 __all__ = []
 __version__ = "0.0-stub"
 PY
+  # Ensure the stub is discoverable via PYTHONPATH
   export PYTHONPATH="$STUBS_DIR:${PYTHONPATH:-}"
+  # Also drop a copy into venv site-packages to bypass PYTHONPATH issues
+  VENV_SITE=$(python - <<'PY'
+import sysconfig
+print(sysconfig.get_paths()["purelib"])  # venv site-packages
+PY
+)
+  mkdir -p "$VENV_SITE/mindquantum"
+  cp -r "$STUBS_DIR/mindquantum/." "$VENV_SITE/mindquantum/"
 fi
 
 # Build via Makefile to run pre-steps in _ext/
