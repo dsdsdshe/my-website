@@ -4,15 +4,21 @@
   "private": true,
   "description": "Static website for MindQuantum with Eleventy and Sphinx-built docs.",
   "scripts": {
-    "dev": "eleventy --serve",
+    "dev": "concurrently -k \"npm:css:dev\" \"eleventy --serve\"",
     "dev:with-docs": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh && eleventy --serve",
-    "build": "eleventy",
+    "build": "npm run css:build && eleventy",
     "build:all": "npm run build && DOCS_LANG=zh_cn bash scripts/build_docs.sh && DOCS_LANG=en bash scripts/build_docs.sh",
+    "css:dev": "tailwindcss -i src/styles.css -o dist/styles.css --watch --postcss",
+    "css:build": "tailwindcss -i src/styles.css -o dist/styles.css --minify --postcss",
     "docs:build:zh": "DOCS_LANG=zh_cn bash scripts/build_docs.sh",
     "docs:build:en": "DOCS_LANG=en bash scripts/build_docs.sh",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "^2.0.1",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.10"
   }
 }

@@ -1,9 +1,9 @@
 # MindQuantum Website
 
-A minimal, maintainable static site for the MindQuantum project. It uses Eleventy (11ty) for the main site and pulls tutorials/documentation from the MindSpore `docs` repository using Sphinx, so you don’t have to maintain duplicate content.
+A minimal, maintainable static site for the MindQuantum project. It uses Eleventy (11ty) for the main site and pulls tutorials/documentation from the MindSpore `docs` repository using Sphinx, so you don’t have to maintain duplicate content. The site styling is powered by Tailwind CSS (via PostCSS), avoiding manual CSS and keeping things consistent and scalable.
 
 ## Structure
-- `src/`: 11ty source (pages, layouts, data, styles)
+- `src/`: 11ty source (pages, layouts, data, styles — Tailwind input at `src/styles.css`)
 - `public/`: static assets copied as-is (favicon, robots.txt)
 - `dist/`: build output (generated)
 - `scripts/build_docs.sh`: clones MindSpore/docs and builds MindQuantum docs via Sphinx
@@ -14,7 +14,7 @@ Prerequisites:
 - Node.js 18+ and npm
 - Python 3.9+ (only needed if you want to build docs locally)
 
-Install and run the site (without docs):
+Install dependencies, then run the site (without docs):
 
 ```bash
 npm install
@@ -41,6 +41,11 @@ Build the site:
 ```bash
 npm run build
 ```
+
+Tailwind CSS:
+- Development: `npm run dev` also runs `tailwindcss` in watch mode, writing the compiled CSS to `dist/styles.css`.
+- Production: `npm run build` runs `tailwindcss` with minification before Eleventy.
+- Configuration: `tailwind.config.cjs` (dark mode is driven by `data-theme="dark"`).
 
 ## Build docs locally (optional)
 If you want to include docs in your local preview/build, run the helper script. It clones the MindSpore docs repo and tries to auto-detect the MindQuantum Sphinx project. The script creates a Python virtualenv under `.tmp/docs/venv` and installs constrained dependencies for compatibility.
@@ -135,6 +140,7 @@ All links in templates use Eleventy’s `url` filter to respect `pathPrefix`.
 
 Optional pieces already in place:
 - Responsive header with theme toggle (light/dark)
+- Tailwind design tokens aligned with Sphinx primary color
 - Docs bridge stylesheet at `public/assets/css/docs-bridge.css`
 
 You can add more pages under `src/` as `.njk`, `.md`, or `.html` files. The default layout is `layouts/base.njk` when specified in the front matter.
