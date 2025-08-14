@@ -1,0 +1,7 @@
+# Constraints to keep Sphinx and plugins compatible with MindQuantum docs
+sphinx==4.4.0
+docutils==0.17.1
+myst-parser==0.18.1
+sphinx_rtd_theme==1.0.0
+nbsphinx==0.8.11
+

@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build_site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -27,42 +27,102 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Compute ELEVENTY_PATH_PREFIX
+        run: |
+          REPO_NAME='${{ github.event.repository.name }}'
+          if [[ "$REPO_NAME" == *.github.io ]]; then
+            echo "ELEVENTY_PATH_PREFIX=/" >> $GITHUB_ENV
+          else
+            echo "ELEVENTY_PATH_PREFIX=/${REPO_NAME}/" >> $GITHUB_ENV
+          fi
+
+      - name: Use npm ci (lockfile present)
+        if: hashFiles('**/package-lock.json') != ''
+        run: npm ci
+
       - name: Install Node dependencies
+        if: hashFiles('**/package-lock.json') == ''
         run: npm install
 
       - name: Build static site (Eleventy)
+        env:
+          ELEVENTY_PATH_PREFIX: ${{ env.ELEVENTY_PATH_PREFIX }}
         run: npm run build
+
+      - name: Upload site artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+
+  build_docs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lang: [ zh_cn, en ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
+          cache: pip
+          cache-dependency-path: scripts/constraints-mindquantum.txt
 
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc graphviz
 
-      - name: Upgrade pip
-        run: python -m pip install --upgrade pip
-
-      - name: Build Sphinx docs from MindSpore/docs
+      - name: Build Sphinx docs (${{ matrix.lang }})
         env:
           DOCS_REPO_URL: https://gitee.com/mindspore/docs.git
           DOCS_SUBPATH: "" # set to conf.py directory if auto-detection fails
-          OUTPUT_DIR: dist/docs
-          DOCS_LANG: zh_cn
+          DOCS_LANG: ${{ matrix.lang }}
           MQ_REPO_URL: https://gitee.com/mindspore/mindquantum.git
           USE_STUB_MQ: "1"
         run: bash scripts/build_docs.sh
 
-      - name: Upload artifact
+      - name: Upload docs artifact (${{ matrix.lang }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.lang }}
+          path: dist/docs
+
+  combine:
+    needs: [ build_site, build_docs ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare workspace
+        run: mkdir -p dist
+
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+
+      - name: Download zh docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-zh_cn
+          path: dist
+
+      - name: Download en docs artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-en
+          path: dist
+
+      - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    needs: build
+    needs: combine
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -71,3 +131,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+

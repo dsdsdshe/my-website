@@ -15,7 +15,7 @@ set -euo pipefail
 # - DOCS_REPO_URL: docs repo URL (default: https://gitee.com/mindspore/docs.git)
 # - DOCS_REF: branch or tag to checkout (default: master)
 # - DOCS_SUBPATH: optional path to the Sphinx conf.py directory, relative to repo root
-# - OUTPUT_DIR: output directory for built docs (default: dist/docs)
+# - OUTPUT_DIR: output directory for built docs (default: dist/docs/{zh|en})
 # - WORK_DIR: temporary working directory (default: .tmp/docs)
 # - DOCS_LANG: zh_cn or en (default: zh_cn)
 # - MQ_REPO_URL: MindQuantum repo URL (default: https://gitee.com/mindspore/mindquantum.git)
@@ -26,7 +26,6 @@ set -euo pipefail
 DOCS_REPO_URL="${DOCS_REPO_URL:-https://gitee.com/mindspore/docs.git}"
 DOCS_REF="${DOCS_REF:-master}"
 DOCS_SUBPATH="${DOCS_SUBPATH:-}"
-OUTPUT_DIR="${OUTPUT_DIR:-dist/docs}"
 WORK_DIR="${WORK_DIR:-.tmp/docs}"
 DOCS_LANG="${DOCS_LANG:-zh_cn}"
 MQ_REPO_URL="${MQ_REPO_URL:-https://gitee.com/mindspore/mindquantum.git}"
@@ -34,6 +33,10 @@ MQ_REF="${MQ_REF:-master}"
 USE_STUB_MQ="${USE_STUB_MQ:-1}"
 
 mkdir -p "$WORK_DIR"
+
+# Work out constraints file path for pip
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONSTRAINTS_FILE="$SCRIPT_DIR/constraints-mindquantum.txt"
 
 if [[ -d "$WORK_DIR/src/.git" ]]; then
   echo "Using existing docs repo at $WORK_DIR/src"
@@ -86,20 +89,17 @@ python -m pip install --upgrade pip wheel setuptools
 
 # Install repo-wide requirements (if present) and project-specific ones
 if [[ -f "$WORK_DIR/src/requirements.txt" ]]; then
-  echo "Installing docs repo requirements"
-  pip install -r "$WORK_DIR/src/requirements.txt"
+  echo "Installing docs repo requirements (constrained)"
+  pip install -c "$CONSTRAINTS_FILE" -r "$WORK_DIR/src/requirements.txt"
 fi
 
 if [[ -f "$SPHINX_ROOT/requirements.txt" ]]; then
-  echo "Installing MindQuantum docs requirements"
-  pip install -r "$SPHINX_ROOT/requirements.txt"
+  echo "Installing MindQuantum docs requirements (constrained)"
+  pip install -c "$CONSTRAINTS_FILE" -r "$SPHINX_ROOT/requirements.txt"
 fi
 
-# Ensure compatible extras present without breaking pinned Sphinx/docutils
-# The docs repo uses nbsphinx ~= 0.8.x elsewhere; align to avoid upgrades
-pip install "nbsphinx==0.8.11" ipython
-# Re-pin Sphinx/docutils in case any transitive deps tried to upgrade them
-pip install "sphinx==4.4.0" "docutils==0.17.1"
+# Ensure extras present, constrained
+pip install -c "$CONSTRAINTS_FILE" nbsphinx ipython
 
 # Prepare MindQuantum repo (for MQ_PATH and API sources copy in conf.py)
 if [[ -z "${MQ_PATH:-}" ]]; then
@@ -130,16 +130,8 @@ if [[ "$USE_STUB_MQ" == "1" ]]; then
 __all__ = []
 __version__ = "0.0-stub"
 PY
-  # Ensure the stub is discoverable via PYTHONPATH
+  # Ensure the stub is discoverable via PYTHONPATH only (no site-packages fallback)
   export PYTHONPATH="$STUBS_DIR:${PYTHONPATH:-}"
-  # Also drop a copy into venv site-packages to bypass PYTHONPATH issues
-  VENV_SITE=$(python - <<'PY'
-import sysconfig
-print(sysconfig.get_paths()["purelib"])  # venv site-packages
-PY
-)
-  mkdir -p "$VENV_SITE/mindquantum"
-  cp -r "$STUBS_DIR/mindquantum/." "$VENV_SITE/mindquantum/"
 fi
 
 # Build via Makefile to run pre-steps in _ext/
@@ -152,6 +144,15 @@ else
   make html SPHINXOPTS="" SPHINXBUILD="$(command -v sphinx-build)" SOURCEDIR=source_zh_cn BUILDDIR=build_zh_cn
 fi
 popd >/dev/null
+
+# Determine OUTPUT_DIR default based on language if not set
+if [[ -z "${OUTPUT_DIR:-}" ]]; then
+  if [[ "$DOCS_LANG" == "en" ]]; then
+    OUTPUT_DIR="dist/docs/en"
+  else
+    OUTPUT_DIR="dist/docs/zh"
+  fi
+fi
 
 # Copy built HTML to output directory
 mkdir -p "$OUTPUT_DIR"

@@ -5,8 +5,8 @@
   "repo_url": "https://gitee.com/mindspore/mindquantum",
   "nav": [
     { "label": "Home", "url": "/" },
-    { "label": "Docs", "url": "/docs/" },
+    { "label": "Docs (ZH)", "url": "/docs/zh/" },
+    { "label": "Docs (EN)", "url": "/docs/en/" },
     { "label": "Blog", "url": "/blog/" }
   ]
 }
-

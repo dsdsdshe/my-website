@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:8080 to preview. The “Docs” link will 404 locally until you build docs into `dist/docs`.
+Open http://localhost:8080 to preview. The “Docs” links will 404 locally until you build docs into `dist/docs/zh` or `dist/docs/en`.
 
 Build the site:
 ```bash
@@ -29,7 +29,7 @@ npm run build
 ```
 
 ## Build docs locally (optional)
-If you want to include docs in your local preview/build, run the helper script. It clones the MindSpore docs repo and tries to auto-detect the MindQuantum Sphinx project. The script creates a Python virtualenv under `.tmp/docs/venv` and installs pinned dependencies.
+If you want to include docs in your local preview/build, run the helper script. It clones the MindSpore docs repo and tries to auto-detect the MindQuantum Sphinx project. The script creates a Python virtualenv under `.tmp/docs/venv` and installs constrained dependencies for compatibility.
 
 ```bash
 # Build Eleventy first (creates dist/)
@@ -51,7 +51,7 @@ If auto-detection fails, specify the path to the `conf.py` directory relative to
 DOCS_SUBPATH="docs/mindquantum/docs/source_zh_cn" bash scripts/build_docs.sh
 ```
 
-The built docs will be placed in `dist/docs/` so your site’s “Docs” link points to `/docs/` correctly.
+The built docs will be placed in `dist/docs/zh/` or `dist/docs/en/` so your site’s “Docs” links point to `/docs/zh/` and `/docs/en/` correctly.
 
 Requirements for MindQuantum docs:
 - `pandoc` must be installed on your system (macOS: `brew install pandoc`, Ubuntu: `sudo apt-get install -y pandoc`).
@@ -80,13 +80,29 @@ Steps to enable:
 1. Push to the `main` branch.
 2. In your GitHub repository Settings → Pages, set “Build and deployment” Source to “GitHub Actions”.
 3. The workflow will:
-   - Install Node deps and build Eleventy to `dist/`
-   - Install system deps (`pandoc`, `graphviz`)
-   - Set up Python and build MindQuantum docs from `mindspore/docs` using Sphinx
-   - Place docs at `dist/docs/`
+   - Build Eleventy site in one job, with `ELEVENTY_PATH_PREFIX` auto-set for user/project Pages
+   - Build docs in a matrix for `zh_cn` and `en` (two jobs)
+   - Combine artifacts to produce a final `dist/` with `docs/zh/` and `docs/en/`
    - Publish `dist/` to Pages
 
 If the workflow cannot auto-detect the MindQuantum `conf.py`, set `DOCS_SUBPATH` in the workflow step to the correct directory.
+
+## GitHub Pages pathPrefix
+For GitHub project pages, the site is served under `/<repo>/`. Eleventy’s `pathPrefix` is set from `ELEVENTY_PATH_PREFIX` during CI:
+- User/org pages (repo name ends with `.github.io`): `/`
+- Project pages (default): `/<repo>/`
+
+Locally, you can mimic project pages by running:
+
+```bash
+ELEVENTY_PATH_PREFIX=/my-website/ npm run build
+```
+
+All links in templates use Eleventy’s `url` filter to respect `pathPrefix`.
+
+## Reproducibility
+- The CI uses pip caching and a constraints file (`scripts/constraints-mindquantum.txt`) to keep Sphinx and plugins compatible.
+- Commit `package-lock.json` and CI will use `npm ci` automatically (the workflow falls back to `npm install` if the lockfile is absent).
 
 ## Customization
 - Site title, description, nav: `src/_data/site.json`
