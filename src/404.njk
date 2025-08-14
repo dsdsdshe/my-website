@@ -4,12 +4,14 @@ permalink: /404.html
 title: Page not found
 ---
 
-<h1>Page not found</h1>
-<p>Sorry, we couldn’t find that page.</p>
-<p>
-  Try the <a href="{{ "/" | url }}">homepage</a> or go to
-  <a href="{{ "/docs/zh/" | url }}">Docs (ZH)</a> ·
-  <a href="{{ "/docs/en/" | url }}">Docs (EN)</a>.
-  
-</p>
-
+<section class="section">
+  <div class="text-center">
+    <h1 class="gradient-text">Page not found</h1>
+    <p>Sorry, we couldn’t find that page.</p>
+    <p class="mt-4 flex justify-center gap-2 flex-wrap">
+      <a class="btn primary" href="{{ "/" | url }}">Back to Home</a>
+      <a class="btn secondary" href="{{ "/docs/zh/" | url }}">Docs (ZH)</a>
+      <a class="btn secondary" href="{{ "/docs/en/" | url }}">Docs (EN)</a>
+    </p>
+  </div>
+</section>

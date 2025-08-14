@@ -1,7 +1,19 @@
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="{{ "/" | url }}">
-      <span class="logo" aria-hidden="true">⟂</span>
+      <span class="logo" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgb(var(--color-brand-600))"/>
+              <stop offset="100%" stop-color="rgb(var(--color-brand-400))"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="40" height="40" rx="10" fill="url(#g)"/>
+          <path d="M14 24c6-12 14-12 20 0M14 24c6 12 14 12 20 0" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="3" fill="white"/>
+        </svg>
+      </span>
       <span class="brand-text">{{ site.title }}</span>
     </a>
 
@@ -12,8 +24,14 @@
     <nav id="primary-nav" aria-label="Primary" data-open="false">
       <ul class="nav">
         {% for item in site.nav %}
-        <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
+          {% set href = item.url | url %}
+          <li>
+            <a href="{{ href }}" {% if page.url == href %}aria-current="page"{% endif %} class="{% if page.url == href %}active{% endif %}">{{ item.label }}</a>
+          </li>
         {% endfor %}
+        <li>
+          <a class="btn secondary" href="{{ site.repo_url }}" rel="noopener">GitHub</a>
+        </li>
         <li>
           <button class="theme-toggle" title="Toggle theme" onclick="window.__toggleTheme()">🌓</button>
         </li>
@@ -21,4 +39,3 @@
     </nav>
   </div>
 </header>
-

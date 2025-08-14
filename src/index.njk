@@ -4,55 +4,118 @@ title: Home
 permalink: /
 ---
 
-<section class="hero">
-  <div>
-    <div class="rounded-xl border border-border bg-gradient-to-br from-brand-600/10 to-brand-400/5 p-6">
-      <h1>MindQuantum</h1>
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 -z-10 opacity-60">
+    <div class="bg-grid"></div>
+    <div class="bg-radial"></div>
+  </div>
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Open-source quantum computing with MindSpore</p>
+      <h1 class="gradient-text">MindQuantum</h1>
       <p>
-        An open-source quantum computing framework built with MindSpore. MindQuantum
-        focuses on efficient quantum circuit simulation, hybrid quantum–classical
-        optimization, and a rich set of algorithms and educational tools.
+        Build, simulate, and optimize quantum circuits. MindQuantum brings
+        high-performance simulation and hybrid quantum–classical algorithms with an
+        ergonomic Python API designed for research and teaching.
       </p>
       <div class="cta">
-        <a class="btn primary" href="{{ "/docs/zh/" | url }}">Docs (ZH)</a>
+        <a class="btn primary" href="{{ "/docs/zh/" | url }}">Get Started (ZH)</a>
         <a class="btn secondary" href="{{ "/docs/en/" | url }}">Docs (EN)</a>
-        <a class="btn secondary" href="{{ "/blog/" | url }}">Latest News</a>
+        <a class="btn secondary" href="{{ site.repo_url }}" rel="noopener">GitHub</a>
       </div>
-      <p class="mt-4"><code>pip install mindquantum</code></p>
+      <div class="mt-4 flex items-center gap-3 flex-wrap">
+        <div class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-elev px-3 py-2">
+          <span class="text-text-muted">Install:</span>
+          <code>pip install mindquantum</code>
+          <button class="theme-toggle" onclick="navigator.clipboard && navigator.clipboard.writeText('pip install mindquantum')">Copy</button>
+        </div>
+        <span class="muted">Python 3.8+ · MindSpore backend</span>
+      </div>
     </div>
-  </div>
-  <div>
-    <div class="card">
-      <h3>What’s inside</h3>
-      <ul>
-        <li>High-performance circuit simulators</li>
-        <li>Variational and hybrid algorithms</li>
-        <li>Educational tutorials and examples</li>
-        <li>APIs designed for research and teaching</li>
-      </ul>
-    </div>
-  </div>
-  </section>
+    <div>
+      <div class="code-card">
+        <div class="code-card-header">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="title">variational_example.py</span>
+        </div>
+<pre><code>from mindquantum import Circuit, H, RX
 
-  <section>
-    <div class="cards">
-      <div class="card">
-        <h3>Documentation</h3>
-        <p>Explore API references, guides, and design notes.</p>
-        <p class="flex flex-wrap gap-2">
-          <a class="btn secondary" href="{{ "/docs/zh/" | url }}">中文文档（ZH）</a>
-          <a class="btn secondary" href="{{ "/docs/en/" | url }}">English (EN)</a>
-        </p>
-      </div>
-      <div class="card">
-        <h3>Tutorials</h3>
-        <p>Hands-on notebooks and walkthroughs for learners.</p>
-        <p><a class="btn secondary" href="{{ "/docs/zh/" | url }}">Browse tutorials</a></p>
-      </div>
-      <div class="card">
-        <h3>Community</h3>
-        <p>Contribute, discuss ideas, and report issues.</p>
-        <p><a class="btn secondary" href="{{ site.repo_url }}">Visit repository</a></p>
+# Build a simple circuit
+c = Circuit()
+c += H.on('q0')
+c += RX('theta').on('q0')
+
+# Evaluate expectation with a parameter
+param = {'theta': 0.42}
+print(c.matrix(param))</code></pre>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<section class="section">
+  <div class="cards">
+    <div class="card">
+      <h3>Documentation</h3>
+      <p>Explore API references, guides, and design notes.</p>
+      <p class="flex flex-wrap gap-2">
+        <a class="btn secondary" href="{{ "/docs/zh/" | url }}">中文文档（ZH）</a>
+        <a class="btn secondary" href="{{ "/docs/en/" | url }}">English (EN)</a>
+      </p>
+    </div>
+    <div class="card">
+      <h3>Tutorials</h3>
+      <p>Hands-on notebooks and walkthroughs for learners.</p>
+      <p><a class="btn secondary" href="{{ "/docs/zh/" | url }}">Browse tutorials</a></p>
+    </div>
+    <div class="card">
+      <h3>Community</h3>
+      <p>Contribute, discuss ideas, and report issues.</p>
+      <p><a class="btn secondary" href="{{ site.repo_url }}">Visit repository</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="cards">
+    <div class="card">
+      <div class="flex items-start gap-3">
+        <div class="icon">⚡</div>
+        <div>
+          <h3 class="mt-0">High-performance simulation</h3>
+          <p>Efficient circuit simulation to accelerate research and experimentation.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="flex items-start gap-3">
+        <div class="icon">🔁</div>
+        <div>
+          <h3 class="mt-0">Hybrid VQE/variational</h3>
+          <p>Compose hybrid quantum–classical workflows with minimal boilerplate.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="flex items-start gap-3">
+        <div class="icon">📚</div>
+        <div>
+          <h3 class="mt-0">Tutorials & education</h3>
+          <p>Guides and examples to help learners ramp up quickly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="rounded-xl border border-border bg-gradient-to-br from-brand-600/10 to-brand-400/10 p-6 text-center">
+    <h3 class="mt-0">Ready to explore?</h3>
+    <p class="muted">Start with our quickstart or browse the API reference.</p>
+    <div class="mt-3 flex items-center justify-center gap-3 flex-wrap">
+      <a class="btn primary" href="{{ "/docs/zh/" | url }}">Quickstart (ZH)</a>
+      <a class="btn secondary" href="{{ "/docs/en/" | url }}">API Reference (EN)</a>
+    </div>
+  </div>
+</section>
+

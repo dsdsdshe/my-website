@@ -34,3 +34,5 @@ html[data-theme="dark"] {
   --pst-color-primary-bg: rgba(106, 167, 255, .12);
 }
 
+/* Avoid anchor overlap with sticky header */
+.bd-content [id] { scroll-margin-top: 80px; }

@@ -63,15 +63,16 @@
   nav[aria-label="Primary"] { @apply ml-auto; }
   .nav { @apply list-none flex gap-1 p-0 m-0 items-center; }
   .nav a { @apply no-underline text-text px-2 py-1.5 rounded-md; }
+  .nav a.active, .nav a[aria-current="page"] { @apply bg-surface-alt; }
   .nav a:hover, .nav a:focus { @apply bg-surface-alt; }
   .theme-toggle { @apply bg-surface-alt border border-border text-text px-2 py-1.5 rounded-md cursor-pointer; }
 
   main.container { @apply py-8 md:py-10; }
 
-  .hero { @apply grid items-center gap-8 py-10 md:py-12; grid-template-columns: 1.2fr 1fr; }
+  .hero { @apply grid items-center gap-8 py-12 md:py-16; grid-template-columns: 1.2fr 1fr; }
   @screen md { .hero { grid-template-columns: 1.2fr 1fr; } }
   @screen sm { .hero { grid-template-columns: 1fr; } }
-  .hero h1 { @apply text-[clamp(2rem,3vw+1rem,3rem)] leading-tight m-0 mb-3; }
+  .hero h1 { @apply text-[clamp(2.3rem,3.2vw+1rem,3.4rem)] leading-tight m-0 mb-3; }
   .hero p { @apply text-text-muted text-[1.05rem]; }
   .hero .cta { @apply mt-4 flex gap-3 flex-wrap; }
 
@@ -101,3 +102,26 @@
 /* Sphinx alignment: keep primary color exposed */
 :root { --pst-color-primary: rgb(var(--color-brand)); }
 [data-theme="dark"] { --pst-color-primary: rgb(var(--color-brand)); }
+
+/* Extras for polish */
+@layer components {
+  .eyebrow { @apply uppercase tracking-wider text-[0.8rem] text-text-muted font-semibold mb-2; }
+  .gradient-text {
+    background: linear-gradient(135deg, rgb(var(--color-brand-600)), rgb(var(--color-brand-400)));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .section { @apply py-8 md:py-10; }
+
+  .code-card { @apply border border-border rounded-xl bg-surface-elev overflow-hidden; box-shadow: 0 8px 30px rgba(0,0,0,.06); }
+  .code-card-header { @apply flex items-center gap-2 px-3 py-2 border-b border-border bg-surface-alt; }
+  .code-card-header .dot { @apply w-3 h-3 rounded-full inline-block; background: #ff5f56; }
+  .code-card-header .dot + .dot { background: #ffbd2e; }
+  .code-card-header .dot + .dot + .dot { background: #27c93f; }
+  .code-card-header .title { @apply ml-2 text-sm text-text-muted; }
+
+  /* Decorative backgrounds */
+  .bg-grid { position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(120,120,140,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(120,120,140,0.08) 1px, transparent 1px); background-size: 28px 28px; }
+  .bg-radial { position: absolute; inset: -10% -20%; background: radial-gradient(600px 300px at 20% 10%, rgba(11,74,216,0.18), transparent), radial-gradient(600px 300px at 80% 20%, rgba(90,163,255,0.12), transparent); filter: blur(2px); }
+
+  .icon { @apply text-2xl; }
+}

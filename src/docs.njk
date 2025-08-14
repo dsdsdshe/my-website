@@ -4,18 +4,18 @@ title: Documentation
 permalink: /docs/
 ---
 
-<h1>Documentation</h1>
-<p>Choose a language to browse the docs built from the MindSpore docs repository.</p>
+<section class="section">
+  <h1 class="gradient-text">Documentation</h1>
+  <p>Choose a language to browse the docs built from the MindSpore docs repository.</p>
 
-<ul>
-  <li><a class="btn secondary" href="{{ "/docs/zh/" | url }}">中文文档（ZH）</a></li>
-  <li><a class="btn secondary" href="{{ "/docs/en/" | url }}">English (EN)</a></li>
-  
-</ul>
+  <div class="mt-4 flex gap-2 flex-wrap">
+    <a class="btn secondary" href="{{ "/docs/zh/" | url }}">中文文档（ZH）</a>
+    <a class="btn secondary" href="{{ "/docs/en/" | url }}">English (EN)</a>
+  </div>
 
-<p class="muted">
-  If these links 404 in local dev, build the docs first:
-  <code>npm run docs:build:zh</code> and/or <code>npm run docs:build:en</code>.
-  Or run <code>npm run dev:with-docs</code>.
-</p>
-
+  <p class="muted mt-4">
+    If these links 404 in local dev, build the docs first:
+    <code>npm run docs:build:zh</code> and/or <code>npm run docs:build:en</code>.
+    Or run <code>npm run dev:with-docs</code>.
+  </p>
+</section>
