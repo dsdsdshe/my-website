@@ -1,0 +1,46 @@
+---
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Docs (ZH)', href: '/docs/zh/' },
+  { label: 'Docs (EN)', href: '/docs/' },
+  { label: 'GitHub', href: 'https://gitee.com/mindspore/mindquantum', external: true },
+];
+---
+<style>
+  header { position: sticky; top: 0; z-index: 40; backdrop-filter: saturate(120%) blur(6px); }
+  .wrap { width: min(1100px, 92%); margin-inline: auto; display: flex; gap: .75rem; align-items: center; justify-content: space-between; height: 56px; }
+  .brand { display: inline-flex; align-items: center; gap: .5rem; text-decoration: none; color: rgb(var(--mq-color-text)); font-weight: 700; }
+  .logo { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: #fff; background-image: linear-gradient(135deg, rgb(var(--mq-color-brand-600)), rgb(var(--mq-color-brand-400))); }
+  nav { display: flex; gap: .25rem; align-items: center; }
+  nav a { text-decoration: none; color: rgb(var(--mq-color-text)); padding: .45rem .6rem; border-radius: 8px; }
+  nav a:hover { background: rgb(var(--mq-color-surface-alt)); }
+  .btn { background: rgb(var(--mq-color-surface-alt)); border: 1px solid rgb(var(--mq-color-border)); border-radius: 8px; padding: .4rem .6rem; text-decoration: none; color: rgb(var(--mq-color-text)); }
+  .theme { background: rgb(var(--mq-color-surface-alt)); border: 1px solid rgb(var(--mq-color-border)); color: rgb(var(--mq-color-text)); padding: .4rem .6rem; border-radius: 8px; cursor: pointer; }
+</style>
+<header style="background: rgb(var(--mq-color-surface-elev)); border-bottom: 1px solid rgb(var(--mq-color-border));">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <span class="logo" aria-hidden="true">&nbsp;</span>
+      <span>MindQuantum</span>
+    </a>
+    <nav>
+      {links.map((l) => (
+        <a href={l.href} rel={l.external ? 'noopener' : undefined}>{l.label}</a>
+      ))}
+      <button class="theme" id="theme-toggle" aria-label="Toggle theme">🌓</button>
+    </nav>
+  </div>
+</header>
+<script>
+  const root = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark' || saved === 'light') {
+    root.setAttribute('data-theme', saved);
+  }
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>
+

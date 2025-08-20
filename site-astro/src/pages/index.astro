@@ -1,0 +1,79 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+<BaseLayout title="MindQuantum">
+  <section>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Open-source quantum computing with MindSpore</p>
+        <h1>MindQuantum</h1>
+        <p>
+          Build, simulate, and optimize quantum circuits. MindQuantum brings high-performance simulation and hybrid
+          quantum–classical algorithms with an ergonomic Python API designed for research and teaching.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="/docs/zh/">Get Started (ZH)</a>
+          <a class="btn secondary" href="/docs/">Docs (EN)</a>
+          <a class="btn secondary" href="https://gitee.com/mindspore/mindquantum" rel="noopener">GitHub</a>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <div style="display:inline-flex; align-items:center; gap:8px; border:1px solid rgb(var(--mq-color-border)); background: rgb(var(--mq-color-surface-elev)); padding: 8px 12px; border-radius: 12px;">
+            <span style="color: rgb(var(--mq-color-text-muted));">Install:</span>
+            <code>pip install mindquantum</code>
+          </div>
+          <span style="color: rgb(var(--mq-color-text-muted));">Python 3.8+ · MindSpore backend</span>
+        </div>
+      </div>
+      <div>
+        <div class="code-card">
+          <div class="code-head">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span style="margin-left: 6px">variational_example.py</span>
+          </div>
+          <pre><code>from mindquantum import Circuit, H, RX
+
+# Build a simple circuit
+c = Circuit()
+c += H.on('q0')
+c += RX('theta').on('q0')
+
+# Evaluate expectation with a parameter
+param = {'theta': 0.42}
+print(c.matrix(param))</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cards">
+      <div class="card">
+        <h3>Documentation</h3>
+        <p>Explore API references, guides, and design notes.</p>
+        <p><a class="btn secondary" href="/docs/">English (EN)</a> <a class="btn secondary" href="/docs/zh/">中文文档（ZH）</a></p>
+      </div>
+      <div class="card">
+        <h3>Tutorials</h3>
+        <p>Hands-on notebooks and walkthroughs for learners.</p>
+        <p><a class="btn secondary" href="/docs/zh/tutorials/overview">Browse tutorials</a></p>
+      </div>
+      <div class="card">
+        <h3>Community</h3>
+        <p>Contribute, discuss ideas, and report issues.</p>
+        <p><a class="btn secondary" href="https://gitee.com/mindspore/mindquantum">Visit repository</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card" style="text-align:center; background: linear-gradient(135deg, rgb(var(--mq-color-brand-600) / .08), rgb(var(--mq-color-brand-400) / .08));">
+      <h3 style="margin-top:0">Ready to explore?</h3>
+      <p style="color: rgb(var(--mq-color-text-muted));">Start with our quickstart or browse the API reference.</p>
+      <div class="cta" style="justify-content:center;">
+        <a class="btn primary" href="/docs/zh/">Quickstart (ZH)</a>
+        <a class="btn secondary" href="/docs/">API Reference (EN)</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

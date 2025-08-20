@@ -1,0 +1,43 @@
+:root {
+  /* Design tokens (kept in sync across home + docs) */
+  --mq-color-brand-600: 11 74 216;  /* #0b4ad8 */
+  --mq-color-brand-400: 90 163 255; /* #5aa3ff */
+  --mq-color-text: 21 21 21;
+  --mq-color-text-muted: 91 97 110;
+  --mq-color-surface: 255 255 255;
+  --mq-color-surface-elev: 255 255 255;
+  --mq-color-surface-alt: 247 247 251;
+  --mq-color-border: 229 231 235;
+  --mq-radius: 12px;
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --mq-color-brand-600: 139 184 255; /* #8bb8ff */
+  --mq-color-brand-400: 169 201 255; /* #a9c9ff */
+  --mq-color-text: 229 231 235;
+  --mq-color-text-muted: 167 176 192;
+  --mq-color-surface: 11 15 23;
+  --mq-color-surface-elev: 18 23 37;
+  --mq-color-surface-alt: 15 20 32;
+  --mq-color-border: 30 38 54;
+
+  color-scheme: dark;
+}
+
+/* Starlight/Docs theme variables */
+:root {
+  --sl-color-text: rgb(var(--mq-color-text));
+  --sl-color-text-accent: rgb(var(--mq-color-brand-600));
+  --sl-color-text-invert: #fff;
+  --sl-color-bg: rgb(var(--mq-color-surface));
+  --sl-color-bg-nav: rgb(var(--mq-color-surface-elev));
+  --sl-color-bg-sidebar: rgb(var(--mq-color-surface-elev));
+  --sl-color-bg-inline-code: rgb(247 247 251);
+  --sl-color-hairline: rgb(var(--mq-color-border));
+  --sl-sidebar-width: 280px;
+  --sl-content-width: 1100px;
+  --sl-radius: var(--mq-radius);
+}
+

@@ -1,0 +1,19 @@
+<style>
+  footer { border-top: 1px solid rgb(var(--mq-color-border)); background: rgb(var(--mq-color-surface-elev)); }
+  .wrap { width: min(1100px, 92%); margin-inline: auto; padding: 20px 0; color: rgb(var(--mq-color-text-muted)); display: flex; gap: .75rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  a { color: inherit; text-decoration: none; }
+</style>
+<footer>
+  <div class="wrap">
+    <span>© <span id="y"></span> MindQuantum</span>
+    <span>
+      <a href="/docs/zh/">Docs (ZH)</a>
+      ·
+      <a href="/docs/">Docs (EN)</a>
+      ·
+      <a href="https://gitee.com/mindspore/mindquantum" rel="noopener">Source</a>
+    </span>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</footer>
+

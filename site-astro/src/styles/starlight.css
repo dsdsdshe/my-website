@@ -1,0 +1,17 @@
+/* Small Starlight touch-ups to align with our homepage visuals */
+.sl-navbar {
+  background: rgb(var(--mq-color-surface-elev));
+  border-bottom: 1px solid rgb(var(--mq-color-border));
+}
+.sl-container {
+  max-width: var(--sl-content-width);
+}
+.sl-markdown-content code {
+  background: var(--sl-color-bg-inline-code);
+  border-radius: .4rem;
+  padding: .1rem .35rem;
+}
+.sl-markdown-content pre {
+  border-radius: .7rem;
+}
+
