@@ -12,8 +12,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
           quantum–classical algorithms with an ergonomic Python API designed for research and teaching.
         </p>
         <div class="cta">
-          <a class="btn primary" href="/docs/zh/">Get Started (ZH)</a>
-          <a class="btn secondary" href="/docs/">Docs (EN)</a>
+          <a class="btn primary" href="/zh/intro">Get Started (ZH)</a>
+          <a class="btn secondary" href="/intro">Docs (EN)</a>
           <a class="btn secondary" href="https://gitee.com/mindspore/mindquantum" rel="noopener">GitHub</a>
         </div>
         <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -30,7 +30,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
             <span class="dot"></span><span class="dot"></span><span class="dot"></span>
             <span style="margin-left: 6px">variational_example.py</span>
           </div>
-          <pre><code>from mindquantum import Circuit, H, RX
+          <pre><code>{`from mindquantum import Circuit, H, RX
 
 # Build a simple circuit
 c = Circuit()
@@ -39,7 +39,7 @@ c += RX('theta').on('q0')
 
 # Evaluate expectation with a parameter
 param = {'theta': 0.42}
-print(c.matrix(param))</code></pre>
+print(c.matrix(param))`}</code></pre>
         </div>
       </div>
     </div>
@@ -50,12 +50,12 @@ print(c.matrix(param))</code></pre>
       <div class="card">
         <h3>Documentation</h3>
         <p>Explore API references, guides, and design notes.</p>
-        <p><a class="btn secondary" href="/docs/">English (EN)</a> <a class="btn secondary" href="/docs/zh/">中文文档（ZH）</a></p>
+        <p><a class="btn secondary" href="/intro">English (EN)</a> <a class="btn secondary" href="/zh/intro">中文文档（ZH）</a></p>
       </div>
       <div class="card">
         <h3>Tutorials</h3>
         <p>Hands-on notebooks and walkthroughs for learners.</p>
-        <p><a class="btn secondary" href="/docs/zh/tutorials/overview">Browse tutorials</a></p>
+        <p><a class="btn secondary" href="/zh/tutorials/overview">Browse tutorials</a></p>
       </div>
       <div class="card">
         <h3>Community</h3>
@@ -70,10 +70,9 @@ print(c.matrix(param))</code></pre>
       <h3 style="margin-top:0">Ready to explore?</h3>
       <p style="color: rgb(var(--mq-color-text-muted));">Start with our quickstart or browse the API reference.</p>
       <div class="cta" style="justify-content:center;">
-        <a class="btn primary" href="/docs/zh/">Quickstart (ZH)</a>
-        <a class="btn secondary" href="/docs/">API Reference (EN)</a>
+        <a class="btn primary" href="/zh/intro">Quickstart (ZH)</a>
+        <a class="btn secondary" href="/intro">API Reference (EN)</a>
       </div>
     </div>
   </section>
 </BaseLayout>
-

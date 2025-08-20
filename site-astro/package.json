@@ -11,9 +11,9 @@
     "sync:tutorials": "node ./scripts/sync-tutorials.mjs"
   },
   "dependencies": {
-    "astro": "^4.12.0",
-    "@astrojs/starlight": "^0.24.2",
-    "@astrojs/mdx": "^3.1.1"
+    "astro": "^5.13.2",
+    "@astrojs/starlight": "^0.35.2",
+    "@astrojs/mdx": "^4.3.4"
   }
 }
 

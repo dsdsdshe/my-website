@@ -5,15 +5,15 @@ This is a fresh implementation of the MindQuantum website and docs with Astro + 
 ## Why this approach
 - Consistent styling and UX across home + docs (single theme).
 - Markdown/MDX content with component slots for richer tutorials.
-- Built-in i18n (English + Chinese) and clean URL structure: `/docs/` and `/docs/zh/`.
+- Built-in i18n (English + Chinese) and clean URL structure: `/intro` and `/zh/intro`.
 - Extensible for search, versioning, analytics, and previews.
 - Lightweight, fast builds, easy customization.
 
 ## Structure
 - `src/pages/`: custom pages (homepage at `/`).
 - `src/content/docs/`: docs content powered by Starlight.
-  - English root at `/docs/…`
-  - Chinese under `/docs/zh/…`
+  - English under `/…` (e.g., `/intro`, `/tutorials/overview`)
+  - Chinese under `/zh/…` (e.g., `/zh/intro`, `/zh/tutorials/overview`)
 - `src/styles/`: design tokens and Starlight tweaks.
 - `scripts/sync-tutorials.mjs`: copy tutorials from the MindSpore/docs repo.
 
